@@ -36,6 +36,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
     return convertedList.map((e) => Todo.fomrMap(e)).toList();
   }
 
+//delete todo
   void deleteTod(String todoId) async {
     try {
       context.loaderOverlay.show();
