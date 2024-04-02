@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:todo/components/urls.dart';
 import 'package:todo/todo_model.dart';
 
 class CreateTodoScreen extends StatefulWidget {
@@ -21,6 +25,52 @@ class _CreateTodoScreenState extends State<CreateTodoScreen> {
     super.initState();
     _title = widget.todo?.title ?? '';
     _description = widget.todo?.description ?? '';
+  }
+
+  saveTodo() async {
+    try {
+      context.loaderOverlay.show();
+      final dio = Dio();
+      final _ = await dio.post(
+        Urls.notes,
+        data: {
+          'title': _title,
+          'description': _description,
+        },
+      );
+      Navigator.of(context).pop(true);
+      Fluttertoast.showToast(msg: "Note saved successfully");
+    } on DioException catch (e) {
+      Fluttertoast.showToast(
+          msg: e.response?.data["message"] ?? "Unable to create todo");
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+    } finally {
+      context.loaderOverlay.hide();
+    }
+  }
+
+  updateTodo() async {
+    try {
+      context.loaderOverlay.show();
+      final dio = Dio();
+      final _ = await dio.put(
+        "${Urls.notes}/${widget.todo?.id}",
+        data: {
+          'title': _title,
+          'description': _description,
+        },
+      );
+      Navigator.of(context).pop(true);
+      Fluttertoast.showToast(msg: "Note updated successfully");
+    } on DioException catch (e) {
+      Fluttertoast.showToast(
+          msg: e.response?.data["message"] ?? "Unable to updated todo");
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+    } finally {
+      context.loaderOverlay.hide();
+    }
   }
 
   @override
@@ -81,19 +131,17 @@ class _CreateTodoScreenState extends State<CreateTodoScreen> {
               ),
               SizedBox(height: 15),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    final _todo = Todo(
-                      id: "",
-                      title: _title,
-                      description: _description,
-                    );
-                    Navigator.of(context)
-                        .pop({'todo': _todo, 'isNew': widget.todo == null});
+                    if (widget.todo != null) {
+                      updateTodo();
+                    } else {
+                      saveTodo();
+                    }
                   }
                 },
                 child: Text(
-                  "Save",
+                  widget.todo != null ? "Update" : "Save",
                   style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),

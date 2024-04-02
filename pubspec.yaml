@@ -38,6 +38,10 @@ dependencies:
   faker: ^2.1.0
   http: ^1.2.1
   jiffy: ^6.2.1
+  dio: ^5.4.2+1
+  fluttertoast: ^8.2.4
+  uuid: ^4.3.3
+  loader_overlay: any
 
 dev_dependencies:
   flutter_test:

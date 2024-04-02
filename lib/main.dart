@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:todo/create_todo_screen.dart';
 import 'package:todo/todo_list_screen.dart';
 
@@ -11,12 +12,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        useMaterial3: false,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+    return GlobalLoaderOverlay(
+      child: MaterialApp(
+        theme: ThemeData(
+          useMaterial3: false,
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        ),
+        home: TodoListScreen(),
       ),
-      home: TodoListScreen(),
     );
   }
 }
